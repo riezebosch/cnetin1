@@ -6,51 +6,96 @@ using System.Threading.Tasks;
 
 namespace ReferenceTypeDemo
 {
-    class Persoon
+    class Persoon : Object
     {
+        public Persoon(string naam)
+        {
+            Naam = naam;
+        }
+        
         public string Naam { get; set; }
 
-        public static bool operator == (Persoon p1, Persoon p2)
+       
+        public override string ToString()
         {
-            Console.WriteLine("Persoon==Persoon");
-            return p1.Naam == p2.Naam;
-        }
-
-        public static bool operator !=(Persoon p1, Persoon p2)
-        {
-            return !(p1 == p2);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return this.Naam == ((Persoon)obj).Naam;
+            return string.Format("Persoon met naam: {0}", this.Naam);
         }
     }
 
     class Student : Persoon
     {
-        public int Cijfer { get; set; }
-        public static bool operator ==(Student p1, Persoon p2)
+        bool _isAfgestudeerd = false;
+        DateTime _geboorteDatum = DateTime.Now;
+
+        public const int DIT_IS_EEN_CONSTANTE = 34;
+
+        public readonly Exception myException;
+
+        public Student(string naam, int cijfer) : base(naam)
         {
-            Console.WriteLine("Student==Persoon");
-            return p1.Naam == p2.Naam;
+            Cijfer = cijfer;
+            _isAfgestudeerd = false;
+
+            myException = new Exception();
         }
 
-        public static bool operator !=(Student p1, Persoon p2)
+
+        public int Cijfer { get; set; }
+        
+
+        public override string ToString()
         {
-            return !(p1 == p2);
+            return string.Format("{0} en cijfer: {1}", base.ToString(), this.Cijfer);
+        }
+    }
+
+    struct MyStruct
+    {
+        public int X, Y;
+
+        public MyStruct(int x) : this()
+        {
+            X = x;
+        }
+    }
+
+    class PrivateConstructorDemo
+    {
+        private int _field;
+
+        private static readonly int _staticreadonlyfield;
+
+        static PrivateConstructorDemo()
+        {
+            _staticreadonlyfield = 5;
+        }
+
+        private PrivateConstructorDemo()
+        {
+
+        }
+
+        public static PrivateConstructorDemo Create()
+        {
+            var p = new PrivateConstructorDemo();
+            
+            // Kan dus bij de private fields van de instance!
+            p._field = 3;
+
+            return p;
         }
 
         public override bool Equals(object obj)
         {
-
-            if (!(obj is  Student))
+            var p2 = obj as PrivateConstructorDemo;
+            if (p2 == null)
             {
                 return false;
             }
 
-            Student s2 = (Student)obj;
-            return this.Naam == s2.Naam && s2.Cijfer == this.Cijfer;
+            // Kan dus bij de private fields van een andere instance!
+            return this._field == p2._field;
+
         }
     }
 
@@ -58,45 +103,44 @@ namespace ReferenceTypeDemo
     {
         static void Main(string[] args)
         {
-            var p1 = new Persoon { Naam = "Manue" };
-            var p2 = new Persoon { Naam = "Manuel" };
-            
-            p1.Naam += Console.ReadLine();
+            var pcd = PrivateConstructorDemo.Create();
 
-            Console.WriteLine(p1 == p2);
-            Console.WriteLine(p1.Naam == p2.Naam);
-            Console.WriteLine(p1.Naam.Equals(p2.Naam));
-            Console.WriteLine(p1.Equals(p2));
+            MyStruct s = new MyStruct(5);
+            Console.WriteLine(s.X);
 
-            //Console.WriteLine(string.Equals(p1, p2, StringComparison.InvariantCultureIgnoreCase));
-            
-            Student st1 = new Student { Naam = "Manuel" };
-            Console.WriteLine("p1.Equals: {0}, st1.Equals: {1}, p1 == st1: {2}, st1 == p1: {3}", 
-                p1.Equals(st1),
-                st1.Equals(p1), 
-                p1 == st1,
-                st1 == p1);
+            Student p = new Student("Manuel", 7);
+            //Print(p);
 
-            Persoon st2 = new Student { Naam = "Manuel" };
-            Console.WriteLine("p1.Equals: {0}, st2.Equals: {1}, p1 == st2: {2}, st2 == p1: {3}",
-                p1.Equals(st2),
-                st2.Equals(p1),
-                p1 == st2,
-                st2 == p1);
+            object o = 4;
+            int i = o as int? ?? -1;
 
+            Console.WriteLine(i is object);
 
-            string demostring = "mijn demo string" + 6 + "nog wat er achter aan";
-            Console.WriteLine(demostring[5]);
+            //string s = "3";
+            //object o2 = s;
+            //int i2 = (int)o2;
+        }
 
-            StringBuilder sb = new StringBuilder();
-            sb.Append("mijn demo string");
-            sb.Append(6);
-            sb.Append("nog wat er achter aan");
-            sb.Insert(3, "extraaaa");
-            Console.WriteLine(sb.ToString());
+        private static void Print(Persoon p)
+        {
+            if (p.GetType() == typeof(Student))
+            {
+                Student s = (Student)p;
+                Console.WriteLine(s.Cijfer);
+            }
 
-            var s2 = string.Format("mijn demo string {0} nog wat er achter aan", 6);
-            
+            if (p is Student)
+            {
+                Student s = (Student)p;
+                Console.WriteLine(s.Cijfer);
+            }
+            Student s2 = p as Student;
+            if (s2 != null)
+            {
+                Console.WriteLine(s2.Cijfer);
+            }
+
+            Console.WriteLine(p.ToString());
         }
     }
 }
