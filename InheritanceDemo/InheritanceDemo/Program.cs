@@ -8,12 +8,17 @@ namespace InheritanceDemo
 {
     class Program
     {
-        class Persoon : IPersoon
+        class Persoon
         {
             public string Naam { get; set; }
+
+            public Persoon(string naam)
+            {
+
+            }
         }
 
-        class Student : ISomethingWithAName, IANameButAnotherType
+        class Student : Persoon
         {
             public string Naam { get; set; }
             int IANameButAnotherType.Naam { get; set; }
@@ -22,7 +27,7 @@ namespace InheritanceDemo
         static void Main(string[] args)
         {
             Student p = new Student();
-            p.Naam
+            
             ((ISomethingWithAName)p).Naam = "Manuel";
             ((IANameButAnotherType)p).Naam = 31;
 
