@@ -50,6 +50,8 @@ namespace SortedListDemo
             {
                 Console.WriteLine(item);
             }
+
+            Console.WriteLine(string.Join(", ", list));
         }
     }
 }
