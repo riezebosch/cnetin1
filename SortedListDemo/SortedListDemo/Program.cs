@@ -20,14 +20,13 @@ namespace SortedListDemo
                 current = current.Next;
             }
 
-            var node = new LinkedListNode<T>(item);
             if (current == null)
             {
                 _items.AddLast(item);
             }
             else
             {
-                _items.AddBefore(current, node);
+                _items.AddBefore(current, item);
             }
         }
 
