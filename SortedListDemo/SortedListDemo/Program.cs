@@ -44,11 +44,7 @@ namespace SortedListDemo
     {
         static void Main(string[] args)
         {
-            var list = new SortedList<int>();
-            list.Add(4);
-            list.Add(2);
-            list.Add(15);
-            list.Add(3);
+            var list = new SortedList<int> {4, 2, 15, 3 };
 
             foreach (var item in list)
             {
